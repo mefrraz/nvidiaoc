@@ -4,91 +4,91 @@
 ![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey.svg)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
-A graphical application for Linux to monitor and control NVIDIA GPU settings, including fan speed, core clock, and memory clock offsets.
+Uma aplicação gráfica para Linux para monitorizar e controlar as definições de placas gráficas NVIDIA, incluindo a velocidade da ventoinha, e os offsets do core clock e memory clock.
 
-This project was built from scratch as a Python application using the Tkinter framework for the GUI. It provides a user-friendly interface for common overclocking and monitoring tasks that typically require complex command-line operations.
-
----
-
-## Features
-
-*   **Real-Time Monitoring:** A dashboard displaying key GPU statistics, updated every two seconds:
-    *   GPU Name
-    *   Temperature
-    *   Fan Speed
-    *   GPU Utilization
-    *   Core & Memory Clock Speeds
-    *   Power Usage
-*   **GPU Controls:** Simple sliders to adjust:
-    *   **Fan Speed:** Set a manual fan speed percentage.
-    *   **Core Clock Offset:** Apply a positive offset to the GPU core clock.
-    *   **Memory Clock Offset:** Apply a positive offset to the GPU memory clock.
-*   **Profile Management:**
-    *   Save your favorite settings as named profiles.
-    *   Quickly load and apply profiles from a dropdown menu.
-    *   Delete profiles you no longer need.
-*   **Command-Line Interface (CLI):**
-    *   Apply settings without launching the GUI, perfect for scripting.
-    *   Supports `--fan`, `--core`, `--mem`, and `--reset` arguments.
-*   **Secure & Robust:**
-    *   Does not require running the entire application as root.
-    *   Uses `pkexec` and a granular Polkit rule for securely running privileged commands.
-    *   Includes dependency checks on startup to guide the user.
+Este projeto foi construído de raiz como uma aplicação Python, utilizando o framework Tkinter para a interface gráfica (GUI). Ele fornece uma interface amigável para tarefas comuns de overclock e monitorização que, tipicamente, exigiriam operações complexas na linha de comandos.
 
 ---
 
-## Screenshot
+## Funcionalidades
 
-*(Placeholder for you to add a screenshot of the application)*
+*   **Monitorização em Tempo Real:** Um painel que exibe as principais estatísticas da GPU, atualizadas a cada dois segundos:
+    *   Nome da GPU
+    *   Temperatura
+    *   Velocidade da Ventoinha
+    *   Utilização da GPU
+    *   Velocidade do Core & Memory Clock
+    *   Consumo de Energia
+*   **Controlos da GPU:** Sliders simples para ajustar:
+    *   **Velocidade da Ventoinha:** Defina uma percentagem de velocidade manual para a ventoinha.
+    *   **Core Clock Offset:** Aplique um offset positivo ao core clock da GPU.
+    *   **Memory Clock Offset:** Aplique um offset positivo ao memory clock da GPU.
+*   **Gestão de Perfis:**
+    *   Guarde as suas configurações favoritas como perfis personalizados.
+    *   Carregue e aplique perfis rapidamente a partir de um menu dropdown.
+    *   Apague perfis que já não necessita.
+*   **Interface de Linha de Comandos (CLI):**
+    *   Aplique configurações sem iniciar a interface gráfica, perfeito para scripts.
+    *   Suporta os argumentos `--fan`, `--core`, `--mem`, e `--reset`.
+*   **Seguro & Robusto:**
+    *   Não exige que a aplicação inteira seja executada como root.
+    *   Utiliza `pkexec` e uma regra Polkit granular para executar comandos privilegiados de forma segura.
+    *   Inclui verificação de dependências no arranque para guiar o utilizador.
+
+---
+
+## Captura de Ecrã
+
+*(Espaço reservado para adicionar uma captura de ecrã da aplicação)*
 
 ![App Screenshot](placeholder.png)
 
 ---
 
-## Installation
+## Instalação
 
-This application is for **Linux only** and requires NVIDIA's proprietary drivers to be installed.
+Esta aplicação é **exclusivamente para Linux** e requer que os drivers proprietários da NVIDIA estejam instalados.
 
-### Step 1: Clone the Repository
+### Passo 1: Clonar o Repositório
 
-First, clone this repository to your local machine.
+Primeiro, clone este repositório para a sua máquina local.
 
 ```bash
 git clone https://github.com/mefrraz/nvidiaoc.git
 cd nvidiaoc
 ```
 
-### Step 2: Install Dependencies
+### Passo 2: Instalar Dependências
 
-The application requires Python's Tkinter library for the GUI and `xhost` for handling display server permissions.
+A aplicação requer a biblioteca Tkinter do Python para a GUI e o `xhost` para gerir as permissões do servidor gráfico.
 
-**On Debian / Ubuntu:**
+**Em Debian / Ubuntu:**
 ```bash
 sudo apt-get update
 sudo apt-get install -y python3-tk x11-xserver-utils
 ```
 
-**On Arch Linux / Cachy OS / Manjaro:**
+**Em Arch Linux / Cachy OS / Manjaro:**
 ```bash
 sudo pacman -Syu --noconfirm tk xorg-xhost
 ```
 
-**On Fedora / CentOS / RHEL:**
+**Em Fedora / CentOS / RHEL:**
 ```bash
 sudo dnf install -y python3-tkinter xorg-xhost
 ```
 
-### Step 3: Configure Polkit Permissions (Crucial Step!)
+### Passo 3: Configurar Permissões Polkit (Passo Crítico!)
 
-To allow the application to change GPU settings without running the entire program as root, you must create a Polkit rule.
+Para permitir que a aplicação altere as configurações da GPU sem executar o programa inteiro como root, tem de criar uma regra Polkit.
 
-1.  **Create the rule file** with a text editor (e.g., `nano`):
+1.  **Crie o ficheiro da regra** com um editor de texto (ex: `nano`):
 
     ```bash
     sudo nano /etc/polkit-1/rules.d/90-nvidiaoc.rules
     ```
 
-2.  **Paste the following content** into the file. The path is already configured for your current directory.
+2.  **Cole o seguinte conteúdo** no ficheiro. O caminho já está configurado para o seu diretório atual.
 
     ```javascript
     // /etc/polkit-1/rules.d/90-nvidiaoc.rules
@@ -96,7 +96,7 @@ To allow the application to change GPU settings without running the entire progr
         if (action.id == "org.freedesktop.policykit.exec" &&
             action.lookup("program") == "/home/veezus/gemini/nvidiaoc2/pkexec_wrapper.sh") {
             
-            // Require administrator authentication for this specific action
+            // Exigir autenticação de administrador para esta ação específica
             return polkit.Result.AUTH_ADMIN;
         }
     });
@@ -104,66 +104,65 @@ To allow the application to change GPU settings without running the entire progr
     
     > **⚠️ Aviso Importante:** O caminho no ficheiro da regra acima (`/home/veezus/gemini/nvidiaoc2/pkexec_wrapper.sh`) está configurado para a sua pasta atual. Se mover o projeto para outro diretório, **terá de editar este ficheiro de regra** com o novo caminho.
 
-3.  **Restart the Polkit service** to apply the new rule:
+3.  **Reinicie o serviço Polkit** para aplicar a nova regra:
     ```bash
     sudo systemctl restart polkit.service
     ```
 
 ---
 
-## Usage
+## Utilização
 
-### GUI Mode
+### Modo Gráfico (GUI)
 
-To run the graphical application, simply execute the main Python script:
+Para executar a aplicação gráfica, simplesmente execute o script principal Python:
 
 ```bash
 python3 nvidia_control.py
 ```
 
-### Command-Line Mode
+### Modo de Linha de Comandos (CLI)
 
-You can apply settings directly from the terminal.
+Pode aplicar configurações diretamente a partir do terminal.
 
-**Examples:**
-*   Set fan speed to 75%:
+**Exemplos:**
+*   Definir a velocidade da ventoinha para 75%:
     ```bash
     python3 nvidia_control.py --fan 75
     ```
-*   Set core and memory offsets:
+*   Definir os offsets de core e memória:
     ```bash
     python3 nvidia_control.py --core 150 --mem 500
     ```
-*   Reset all settings to default (puts fan back on auto):
+*   Repor todas as configurações para o padrão (coloca a ventoinha em modo automático):
     ```bash
     python3 nvidia_control.py --reset
     ```
 
 ---
 
-## Development Story & Challenges
+## História do Desenvolvimento & Desafios
 
-This project was an interesting journey into the complexities of desktop application development on Linux, particularly concerning system permissions.
+Este projeto foi uma jornada interessante pelas complexidades do desenvolvimento de aplicações desktop em Linux, particularmente no que diz respeito a permissões de sistema.
 
-The core challenge was that `nvidia-settings`, the tool used to control the GPU, requires root privileges to modify hardware state. However, it *also* requires access to the user's active graphical session (the X11 display server) to function. This creates a classic permissions conflict:
-*   Running the app with `sudo` is a major security risk and often fails because the `root` user is denied access to the regular user's display.
-*   Running as a regular user works for monitoring but fails when trying to apply settings.
+O desafio principal foi que o `nvidia-settings`, a ferramenta usada para controlar a GPU, precisa de privilégios de root para *modificar* o estado do hardware. No entanto, ele também precisa de acesso à sessão gráfica ativa do utilizador (o servidor X11) para funcionar. Isto cria um conflito de permissões clássico:
+*   Executar a aplicação com `sudo` é um grande risco de segurança e geralmente falha porque o utilizador `root` não tem acesso ao ecrã do utilizador normal.
+*   Executar como um utilizador normal funciona para monitorizar, mas falha ao tentar aplicar configurações.
 
-The solution involved a multi-layered approach to securely elevate privileges for *only* the specific commands that needed them:
+A solução envolveu uma abordagem em várias camadas para elevar privilégios de forma segura, *apenas* para os comandos específicos que precisavam deles:
 
-1.  **`pkexec`:** Instead of `sudo`, we use `pkexec` from Polkit (PolicyKit). It is the modern, standard way to handle privilege escalation for specific commands in graphical environments.
+1.  **`pkexec`:** Em vez de `sudo`, usámos o `pkexec` do Polkit (PolicyKit). É a forma moderna e recomendada de gerir a elevação de privilégios para comandos específicos em ambientes gráficos.
 
-2.  **Polkit Rule:** A custom rule was created in `/etc/polkit-1/rules.d/`. This rule explicitly allows the execution of *only* our `pkexec_wrapper.sh` script, and only after authenticating as an administrator. This is far more secure than a broad `sudo` rule, as it strictly limits what can be run as root.
+2.  **Regra Polkit:** Foi criada uma regra personalizada em `/etc/polkit-1/rules.d/`. Esta regra permite explicitamente a execução de *apenas* o nosso script `pkexec_wrapper.sh`, e somente após autenticação como administrador. Isto é muito mais seguro do que uma regra `sudo` abrangente.
 
-3.  **`xhost`:** To solve the display access issue, the `xhost` command is used to temporarily grant the `root` user permission to connect to the user's display server. This permission is added right before the `pkexec` command runs and is immediately removed afterward in a `try...finally` block to ensure the system is not left in an insecure state.
+3.  **`xhost`:** Para resolver o problema de acesso ao ecrã, o comando `xhost` é usado para conceder temporariamente ao utilizador `root` permissão para se conectar ao servidor gráfico do utilizador. Essa permissão é adicionada imediatamente antes da execução do comando `pkexec` e removida logo a seguir num bloco `try...finally` para garantir que o sistema não fica num estado inseguro.
 
-4.  **Wrapper Script (`pkexec_wrapper.sh`):** When `pkexec` runs a command as root, it does so in a highly sanitized environment, stripping crucial variables like `DISPLAY` and `XAUTHORITY`. The wrapper script's job is to receive these variables as arguments from the main Python application and export them, recreating the necessary graphical environment for `nvidia-settings` to run successfully as root.
+4.  **Script Wrapper (`pkexec_wrapper.sh`):** Quando o `pkexec` executa um comando como root, ele fá-lo num ambiente altamente "limpo", removendo variáveis cruciais como `DISPLAY` e `XAUTHORITY`. O trabalho do script wrapper é receber essas variáveis como argumentos da aplicação Python principal e exportá-las, recriando o ambiente gráfico necessário para que o `nvidia-settings` seja executado com sucesso como root.
 
-Through an iterative process of debugging and refinement, this combination of tools provided a robust and secure solution, allowing the application to function as intended without compromising system security.
+Através de um processo iterativo de depuração e refinamento, esta combinação de ferramentas forneceu uma solução robusta e segura, permitindo que a aplicação funcione como pretendido sem comprometer a segurança do sistema.
 
 ---
 
-## License
+## Licença
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.# nvidiaoc
-# nvidiaoc
+Este projeto está licenciado sob a Licença MIT. Veja o ficheiro [LICENSE](LICENSE) para mais detalhes.
